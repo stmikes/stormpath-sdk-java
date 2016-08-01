@@ -20,9 +20,11 @@ import com.stormpath.sdk.servlet.filter.FilterChainManager;
 import com.stormpath.sdk.servlet.filter.FilterChainResolver;
 import com.stormpath.sdk.servlet.filter.PathMatchingFilterChainResolver;
 import com.stormpath.sdk.servlet.filter.PrioritizedFilterChainResolver;
+import com.stormpath.sdk.servlet.filter.cors.CORSFilter;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,7 +44,9 @@ public class FilterChainResolverFactory extends ConfigSingletonFactory<FilterCha
         AccountResolverFilterFactory factory = new AccountResolverFilterFactory();
         factory.init(servletContext);
         Filter accountFilter = factory.getInstance();
-        final List<Filter> priorityFilters = Collections.singletonList(accountFilter);
+        Filter corsFilter = new CORSFilter();
+
+        final List<Filter> priorityFilters = Collections.unmodifiableList(Arrays.asList(accountFilter, corsFilter));
 
         //we always want our immediateExecutionFilters to run before the default chain:
         return new PrioritizedFilterChainResolver(resolver, priorityFilters);
