@@ -74,7 +74,6 @@ import com.stormpath.sdk.servlet.filter.account.JwtAccountResolver;
 import com.stormpath.sdk.servlet.filter.account.JwtSigningKeyResolver;
 import com.stormpath.sdk.servlet.filter.account.SessionAccountResolver;
 import com.stormpath.sdk.servlet.filter.account.SessionAuthenticationResultSaver;
-import com.stormpath.sdk.servlet.filter.cors.CORSFilter;
 import com.stormpath.sdk.servlet.filter.mvc.ControllerFilter;
 import com.stormpath.sdk.servlet.filter.oauth.AccessTokenAuthenticationRequestFactory;
 import com.stormpath.sdk.servlet.filter.oauth.AccessTokenResultFactory;
@@ -1500,8 +1499,7 @@ public abstract class AbstractStormpathWebMvcConfiguration {
         accountResolverFilter.setEnabled(stormpathFilterEnabled);
         accountResolverFilter.setResolvers(stormpathAccountResolvers());
         accountResolverFilter.setOauthEndpointUri(accessTokenUri);
-        Filter corsFilter = new CORSFilter();
-        List<Filter> priorityFilters = Collections.<Filter>toList(accountResolverFilter, corsFilter);
+        List<Filter> priorityFilters = Collections.<Filter>toList(accountResolverFilter);
 
         return new PrioritizedFilterChainResolver(resolver, priorityFilters);
     }
