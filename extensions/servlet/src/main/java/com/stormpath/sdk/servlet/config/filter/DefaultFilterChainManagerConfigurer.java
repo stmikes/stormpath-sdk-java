@@ -25,7 +25,6 @@ import com.stormpath.sdk.servlet.config.impl.ExpressionConfigReader;
 import com.stormpath.sdk.servlet.filter.DefaultFilter;
 import com.stormpath.sdk.servlet.filter.FilterChainManager;
 
-import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.util.LinkedHashMap;
@@ -65,6 +64,7 @@ public class DefaultFilterChainManagerConfigurer {
         boolean assetsEnabled = reader.getBoolean("stormpath.web.assets.enabled");
         boolean jsEnabled = reader.getBoolean("stormpath.web.assets.js.enabled");
         boolean cssEnabled = reader.getBoolean("stormpath.web.assets.css.enabled");
+        boolean corsEnabled = reader.getBoolean("stormpath.web.cors.enabled");
 
         //Ensure handlers are registered:
         String loginUrl = config.getLoginConfig().getUri();
@@ -274,6 +274,10 @@ public class DefaultFilterChainManagerConfigurer {
                 mgr.createChain("/assets/css/custom.stormpath.css", "staticResource");
                 mgr.createChain("/assets/css/override.stormpath.css", "staticResource");
             }
+        }
+
+        if (corsEnabled) {
+            mgr.createChain("/*", DefaultFilter.cors.name());
         }
 
         //register configured request handlers if not yet specified:
