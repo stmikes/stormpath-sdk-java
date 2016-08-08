@@ -5,16 +5,16 @@ jdk:
 - oraclejdk7
 - oraclejdk8
 before_install:
-- . ./build/before_install.sh
+- . ./ci/before_install.sh
 
 install:
-- ./build/install.sh
+- ./ci/install.sh
 
 script:
-- ./build/build.sh
+- ./ci/build.sh
 
 after_success:
-- ./build/after_success.sh
+- ./ci/after_success.sh
 
 notifications:
   slack:
