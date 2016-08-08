@@ -112,16 +112,11 @@
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>
-                <version>1.4.18</version>
+                <version>1.5.0</version>
                 <configuration>
                     <skip>${skipITs}</skip>
                     <container>
                         <containerId>tomcat7x</containerId>
-                        <zipUrlInstaller>
-                            <url>
-                                http://repo1.maven.org/maven2/org/apache/tomcat/tomcat/7.0.69/tomcat-7.0.69.zip
-                            </url>
-                        </zipUrlInstaller>
                     </container>
                     <deployables>
                         <deployable>

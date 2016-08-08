@@ -21,6 +21,16 @@ OPTION_ARGUMENT02=${3:-NOT_SET}
 
 AVAILABLE_PROFILES="java, laravel, express"
 
+WORKDIR=$PWD
+
+RED="\e[31m"
+GREEN="\e[32m"
+NORMAL="\e[0m"
+
+function error() {
+  echo -e "$RED-------> $1 $NORMAL"
+}
+
 if [ "$OPTION" = "NO_OPTION" ] ; then
     echo "usage: tck [<option>]"
     echo "Option"
@@ -36,32 +46,30 @@ case "$OPTION" in
     clone)
         DIR=${OPTION_ARGUMENT01}
         if [ "${DIR}" = "NOT_SET" ] ; then DIR="stormpath-framework-tck"; fi
-        echo "Checking out TCK"
+        echo "-------> Checking out TCK"
         git config user.email "evangelists@stormpath.com"
         git config user.name "stormpath-sdk-java TCK"
         git clone git@github.com:stormpath/stormpath-framework-tck.git ${DIR}
         cd ${DIR}
         git checkout master
         git pull
-        echo "TCK cloned"
+        echo "-------> TCK cloned"
         ;;
     run)
         PROFILE=${OPTION_ARGUMENT01}
         DIR=${OPTION_ARGUMENT02}
-        #Let's read the name of the directory where tck was cloned
-        if [ "$PROFILE" = "NOT_SET" ] ; then echo "Missing profile. Valid profiles are $AVAILABLE_PROFILES"; exit; fi
         if [ "${DIR}" = "NOT_SET" ] ; then DIR="stormpath-framework-tck"; fi
-        echo "Setting TCK properties"
-        echo "Using profile: ${PROFILE}"
-        cd ${DIR}
-        echo "Running TCK now!"
-        #We need to remove the --fail-never switch once we are spec compliant. We are using it now so we get more coverage from TCK tests
-        mvn --fail-never -P$PROFILE clean verify
+        echo "-------> Setting TCK properties"
+        echo "-------> Using profile: ${PROFILE}"
+        cd ${IR}
+        echo "-------> Running TCK now!"
+        mvn -P$PROFILE clean verify &> $WORKDIR/target/tck.log
         EXIT_STATUS="$?"
         if [ "$EXIT_STATUS" -ne 0 ]; then
-            echo "TCK found errors! :^(. Exit status was $EXIT_STATUS"
+            error "-------> TCK found errors! :^(. Exit status was $EXIT_STATUS"
+            cat $WORKDIR/target/tck.log
             exit $EXIT_STATUS
         fi
-        echo "TCK ran successfully, no errors found!"
+        echo "-------> TCK ran successfully, no errors found!"
         ;;
 esac
